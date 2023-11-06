@@ -11,6 +11,7 @@ export const createBaseFunctions = (): void => {
     const isPlacingAllowed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
     const tableCells = [...document.querySelectorAll(".cell")] as HTMLTableCellElement[]
     const grid: GridCell[][] = Array(15).fill(0).map(() => Array(40).fill(null))
+
     // po deafaultu ne mogu elementi da se postavljaju preko drugih pa zato moras da disable
     fromEvent(tableCells, "dragover")
         .pipe(
@@ -86,7 +87,7 @@ export const createBaseFunctions = (): void => {
 
     fromEvent(startBtn, "click").subscribe({
         next: () => {
-            bfs(grid, tableCells)
+            bfs(grid)
         }
     })
 }

@@ -1,3 +1,4 @@
 import { GridCell, ItemType } from "./gridCell";
+import { Coords } from "./coords";
 
-export { GridCell, ItemType }
+export { GridCell, ItemType, Coords }
