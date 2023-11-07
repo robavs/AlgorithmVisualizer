@@ -38,17 +38,6 @@ export const bfs = (grid: GridCell[][]): void => {
             if (isFound) {
                 intervalSubscription$.unsubscribe()
 
-                const sub = new BehaviorSubject(shortestPath$)
-
-                // interval(500).pipe(
-                //     mergeMap((val) => {
-                //         return of(shortestPath$)
-                //     }),
-                //     tap((val) => {
-                //         val.pipe(take(1)).subscribe(console.log)
-                //     })
-                // )
-                //     .subscribe()
                 shortestPath$
                     .pipe(
                         mergeMap((coords, index) => {
@@ -61,17 +50,6 @@ export const bfs = (grid: GridCell[][]): void => {
                         })
                     )
                     .subscribe()
-
-                // interval(500).pipe(
-                //     take(1),
-                //     mergeMap(() => shortestPath$),
-                //     switchMap(([x, y]) => {
-                //         matrixCell[x][y].classList.add("shortest-path")
-                //         return of([x, y])
-                //     })
-                // )
-                //     .subscribe()
-
             }
         }
     })
