@@ -56,3 +56,7 @@ body {
 .visited {
     background-color: green;
 }
+
+.shortest-path {
+    background-color: red;
+}
