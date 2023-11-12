@@ -1,15 +1,14 @@
 import { Coords, GridCell, ItemType } from "../../model";
 import { coords, isValid } from "./utils";
-import { matrixCell } from "../../view/gridTable";
-import { BehaviorSubject, Observable, Subscription, combineLatest, concatMap, count, delay, distinctUntilChanged, elementAt, filter, first, from, interval, last, map, mergeMap, of, scan, skip, switchMap, take, takeLast, takeUntil, tap, throttleTime } from "rxjs";
+import { matrixCell } from "../../view/bfs/gridTable";
+import { BehaviorSubject, Observable, Subscription, filter, from, interval, of, switchMap, take, tap } from "rxjs";
 
-// mora vidim kako da ne porsledjujem kao argument vec da ih prensem preko import/export
 export const bfs = (grid: GridCell[][]): void => {
     let queue$: Observable<Coords> = of([])
     const isCheeseFound$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
     const queueSize$: BehaviorSubject<number> = new BehaviorSubject<number>(1)
     const currentPath$: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([])
-    let shortestPath$: Observable<number[]> = of()
+    let shortestPath$: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([])
     const gridPath: number[][][][] = []
 
     for (let i = 0; i < grid.length; i++) {
@@ -33,28 +32,26 @@ export const bfs = (grid: GridCell[][]): void => {
         .subscribe()
 
     // treba da se proveri ako nije uopste nadjen da se i tada ukine subsrkipcija
+
     isCheeseFound$.subscribe({
         next: (isFound: boolean) => {
             if (isFound) {
                 intervalSubscription$.unsubscribe()
 
-                shortestPath$
-                    .pipe(
-                        mergeMap((coords, index) => {
-                            return of(coords).pipe(
-                                delay(50 * (index + 1))
-                            )
-                        }),
-                        tap(([x, y]) => {
+                // animacija za prikaz najkraceg puta
+                const interval$: Subscription = interval(50).subscribe({
+                    next: (index) => {
+                        if (index < shortestPath$.value.length) {
+                            const [x, y] = shortestPath$.value[index]
                             matrixCell[x][y].classList.add("shortest-path")
-                        })
-                    )
-                    .subscribe()
+                        }
+                        else interval$.unsubscribe()
+                    }
+                })
             }
         }
     })
 
-    // mora i da se rekonstruise put pa da se onda pokrene neka nova animacija
     const nextSquares = (): void => {
         // moguce da cak i ovo moze preko nekog operatora da se uradi
         const newCoords: Coords[] = []
@@ -80,9 +77,8 @@ export const bfs = (grid: GridCell[][]): void => {
                     gridPath[x][y] = [...currentPath$.value, [x, y]]
                     if (grid[x][y] === ItemType.Cheese) {
                         matrixCell[x][y].classList.add("found")
-                        shortestPath$ = from(gridPath[x][y])
+                        shortestPath$.next(gridPath[x][y])
                         isCheeseFound$.next(true)
-                        console.log("PATH JE", gridPath[x][y])
                     }
                     else {
                         matrixCell[x][y].classList.add("visited")

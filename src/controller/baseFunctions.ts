@@ -3,10 +3,10 @@ import { GridCell, ItemType } from "../model"
 import { bfs } from "./algorithms/bfs"
 // treba napravim da mozes da dodas samo jednog misa i samo jedan sir!!!
 
-export const createBaseFunctions = (): void => {
+export const gridTableFunctions = (): void => {
     const icons = [...document.querySelectorAll(".icon")] as HTMLImageElement[]
     const startBtn = document.querySelector(".start-btn") as HTMLDivElement
-    const algorithmOptions = [...document.querySelectorAll('input[type="radio"]')] as HTMLInputElement[]
+
     // razmisli da l mozda da stavim da mi tableCells bude BehaviourSubject
     const isPlacingAllowed: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
     const tableCells = [...document.querySelectorAll(".cell")] as HTMLTableCellElement[]

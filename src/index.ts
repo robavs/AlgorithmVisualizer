@@ -1,5 +1,3 @@
-import { generateView } from "./view/generateView";
-import { createBaseFunctions } from "./controller/baseFunctions";
+import { createNavbar } from "./view/navbar";
 
-generateView()
-createBaseFunctions()
+createNavbar()
