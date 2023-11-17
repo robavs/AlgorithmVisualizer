@@ -5,8 +5,9 @@ import { BehaviorSubject, Observable, Subscription, filter, from, interval, of, 
 
 export const bfs = (grid: GridCell[][]): void => {
     let queue$: Observable<Coords> = of([])
+
     const isCheeseFound$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
-    const queueSize$: BehaviorSubject<number> = new BehaviorSubject<number>(1)
+    // const queueSize$: BehaviorSubject<number> = new BehaviorSubject<number>(1)
     const currentPath$: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([])
     let shortestPath$: BehaviorSubject<number[][]> = new BehaviorSubject<number[][]>([])
     const gridPath: number[][][][] = []
@@ -25,8 +26,7 @@ export const bfs = (grid: GridCell[][]): void => {
     const intervalSubscription$: Subscription = interval(250)
         .pipe(
             tap(() => {
-                if (queueSize$.value)
-                    nextSquares()
+                nextSquares()
             })
         )
         .subscribe()
@@ -58,7 +58,8 @@ export const bfs = (grid: GridCell[][]): void => {
 
         queue$
             .pipe(
-                take(queueSize$.value),
+                // take === shift
+                // take(queueSize$.value),
                 switchMap(([x, y]: Coords) => {
                     currentPath$.next(gridPath[x][y])
 
@@ -89,7 +90,6 @@ export const bfs = (grid: GridCell[][]): void => {
             )
             .subscribe()
 
-        queueSize$.next(newCoords.length)
         queue$ = from(newCoords)
     }
 }

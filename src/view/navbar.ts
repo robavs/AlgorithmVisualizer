@@ -14,6 +14,7 @@ export function createNavbar(): void {
         navBtn.textContent = option
         navBtn.classList.add("navbar-btn")
         navBtn.classList.add("inactive")
+
         fromEvent(navBtn, "click").pipe(
             tap(() => {
                 navBtnActive$.next(navBtn.textContent!)

@@ -47,18 +47,15 @@ export function sudokuView() {
 
                 if (value < 0 || value > 9) {
                     element.style.border = "2px solid red"
+                    isSolvable$.next(false)
                 }
                 else element.style.border = ""
 
                 // jer kad se brise onda je value = 0
                 value = value || -1
-                if (value !== -1 && (value > 9 || value < 1)) {
-                    isSolvable$.next(false)
-                }
-                else {
-                    sudokuTable$.value[x][y] = value
-                    sudokuTable$.next(sudokuTable$.value)
-                }
+
+                sudokuTable$.value[x][y] = value
+                sudokuTable$.next(sudokuTable$.value)
             })
         )
         .subscribe()
@@ -66,7 +63,6 @@ export function sudokuView() {
     sudokuTable$.subscribe({
         next: (sudokuTable) => {
             isSolvable$.next(isValidSudoku(sudokuTable))
-            h1.textContent = "Sudoku is " + (isSolvable$.value ? "solvable" : " not solvable")
         }
     })
 
@@ -74,6 +70,7 @@ export function sudokuView() {
         next: (isSolvable) => {
             solveBtn.style.pointerEvents = isSolvable ? "auto" : "none"
             solveBtn.style.opacity = isSolvable ? "1" : "0.5"
+            h1.textContent = "Sudoku is " + (isSolvable$.value ? "solvable" : " not solvable")
         }
     })
 }

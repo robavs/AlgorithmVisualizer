@@ -12,13 +12,6 @@ export const gridTableFunctions = (): void => {
     const tableCells = [...document.querySelectorAll(".cell")] as HTMLTableCellElement[]
     const grid: GridCell[][] = Array(15).fill(0).map(() => Array(40).fill(null))
 
-    // po deafaultu ne mogu elementi da se postavljaju preko drugih pa zato moras da disable
-    fromEvent(tableCells, "dragover")
-        .pipe(
-            tap((event) => event.preventDefault())
-        )
-        .subscribe()
-
     // onemogucava da imas drag event za elemente koji se vec nalaze na tabeli
     fromEvent(tableCells, "dragstart")
         .pipe(
@@ -35,18 +28,11 @@ export const gridTableFunctions = (): void => {
             const cell = event.currentTarget as HTMLTableCellElement
             if (!cell.childNodes.length) return
 
+            // brisanje
             grid[Number(cell.getAttribute("x"))][Number(cell.getAttribute("y"))] = null
             cell.innerHTML = ""
         })
     ).subscribe()
-
-    const selectedCell$: Observable<HTMLTableCellElement> = fromEvent(tableCells, "drop")
-        .pipe(
-            tap(() => {
-                isPlacingAllowed.next(true)
-            }),
-            map(event => event.currentTarget as HTMLTableCellElement)
-        )
 
     const selectedIcon$: Observable<HTMLImageElement> = fromEvent(icons, "dragstart")
         .pipe(
@@ -56,8 +42,20 @@ export const gridTableFunctions = (): void => {
             map(event => event.currentTarget as HTMLImageElement)
         )
 
-    // morace garant i da se uradi neki unsubsribe pogotov ako budem imao dragover 
-    // dobro ovde se mora cekira i situacija kad smo sigurni da je draggin over table, a ne lastValue
+    // po deafaultu ne mogu elementi da se postavljaju preko drugih pa zato moras da disable
+    fromEvent(tableCells, "dragover")
+        .pipe(
+            tap((event) => event.preventDefault())
+        )
+        .subscribe()
+
+    const selectedCell$: Observable<HTMLTableCellElement> = fromEvent(tableCells, "drop")
+        .pipe(
+            tap(() => {
+                isPlacingAllowed.next(true)
+            }),
+            map(event => event.currentTarget as HTMLTableCellElement)
+        )
 
     combineLatest([selectedCell$, selectedIcon$])
         .subscribe({
