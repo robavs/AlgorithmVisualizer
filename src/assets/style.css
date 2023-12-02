@@ -39,6 +39,16 @@ body {
     opacity: 0.5
 }
 
+.placeable {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.not-placeable {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 /*------------------bfs------------------*/
 
 .icon {
